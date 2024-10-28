@@ -1,5 +1,5 @@
 ### GCloud-Termux
-> access and use Google Cloud Shell from Termux on Android » leveraging Docker and additional tools that are not available in Termux
+> access and use Google Cloud Shell from Termux on Android
 
 <ol>
   <li>Install <a href="https://github.com/termux/termux-app/releases/download/v0.118.0/termux-app_v0.118.0+github-debug_universal.apk">Termux</a></li>
