@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+echo -e "\napt update ...\n"
+apt update > /dev/null 2> >(grep -v "apt does not have a stable CLI interface")
+
+charit=-0
+total=8
+
+packages=(
+    "krb5"
+    "ldns"
+    "libffi"
+    "python"
+    "openssl"
+    "openssh"
+    "libsqlite"
+    "libresolv-wrapper"
+)
+
+echo "check : ${packages[@]}"
+
+for package in "${packages[@]}"; do
+    charit=$((charit + 1)) 
+    echo -ne "\r$charit/$total"
+    installed=$(apt policy "$package" 2>/dev/null | grep 'Installed' | awk '{print $2}')
+    candidate=$(apt policy "$package" 2>/dev/null | grep 'Candidate' | awk '{print $2}')
+    if [ "$installed" != "$candidate" ]; then
+        apt download "$package" >/dev/null 2>&1
+        dpkg --force-overwrite -i "${package}"*.deb >/dev/null 2>&1
+        rm -f "${package}"*.deb
+    fi
+done
+  
+echo -e "\n\ncheck : google-cloud-sdk"
+
+curl -# -f "https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz" | tar --strip-components=1 -C "$PREFIX" -zxf -
+
+echo -e "\n\e[1;32mgcloud was installed successfully\e[0m\n\n"
